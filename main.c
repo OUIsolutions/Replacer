@@ -12,21 +12,8 @@ int main(){
 
     stack = newCTextStackModule();
     interface = newCliInterface();
-    /*
-    UserData *user = malloc(sizeof(UserData));
-    *user = (UserData){0};
-    user->action = SEARCH;
-    user->first_token = strdup("void");
-    user->first_token_size = strlen("void");
 
-    user->case_sensitive = true;
-    user->ignore_strings= true;
-    user->source = strdup("src");
-    execute_the_search(user);
-    user_data_free(user);
-    return 0;
-    */
-     UserData  *user_data = extract_user_informations();
+    UserData  *user_data = extract_user_informations();
 
 
     if(user_data->action == SEARCH){
