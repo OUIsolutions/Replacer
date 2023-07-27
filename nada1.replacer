@@ -1,0 +1,5 @@
+[{
+		"action":	"write",
+		"source":	"teste.txt",
+		"content":	"\neai parsa a1 parsa"
+	}]
