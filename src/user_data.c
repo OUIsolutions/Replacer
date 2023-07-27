@@ -4,6 +4,7 @@
 
 const int  SEARCH = 0;
 const int  REPLACE = 1;
+const int RESTORE = 2;
 
 typedef struct UserData{
     int action;
@@ -24,11 +25,21 @@ UserData * extract_user_informations(){
     //extracting informations
 
 
-    user->action = interface.ask_option( &interface,"type the action","search | replace");
-
+    user->action = interface.ask_option( &interface,"type the action","search | replace | restore");
+    if(user->action == RESTORE){
+        char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
+        CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
+        stack.self_replace(backup_modifed,".replacer","");
+        stack.text(backup_modifed, ".replacer");
+        user->backup_file_path = strdup(backup_modifed->rendered_text);
+        stack.free(backup_modifed);
+        return user;
+    }
     if(user->action == SEARCH){
         user->first_token = interface.ask_string(&interface,"type the element to search",CLI_NOT_TRIM);
     }
+
+
     if(user->action == REPLACE){
         user->first_token = interface.ask_string(&interface,"type the element that will be replaced",CLI_NOT_TRIM);
         user->second_token = interface.ask_string(&interface,"type the element to replace",CLI_NOT_TRIM);
@@ -102,9 +113,13 @@ UserData * extract_user_informations(){
 }
 
 void user_data_free(UserData *user){
-    free(user->source);
-    free(user->first_token);
-    if(user->action == REPLACE){
+    if(user->source){
+        free(user->source);
+    }
+    if(user->first_token){
+        free(user->first_token);
+    }
+    if(user->second_token){
         free(user->second_token);
     }
     if(user->backup_file_path){
