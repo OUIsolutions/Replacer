@@ -104,7 +104,7 @@ void generated_transaction_backup(DtwTransaction *transaction){
 
         if(dtw_entity_type(backup_modifed->rendered_text) != DTW_NOT_FOUND){
             CTextStack *already_exist_mensage = newCTextStack_string_empty();
-            stack.format(already_exist_mensage,"file: %s already exist",backup_modifed->rendered_text);
+            stack.format(already_exist_mensage,"file: %s already exist\n",backup_modifed->rendered_text);
             interface.warning(&interface,already_exist_mensage->rendered_text);
             stack.free(already_exist_mensage);
             stack.free(backup_modifed);
