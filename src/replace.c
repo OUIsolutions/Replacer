@@ -27,8 +27,7 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
 
             //means its inside and its an scape scape
             if(inside_string  == true && current_char =='\\'){
-                i+=1;
-                stack.format(new_element,"%c",current_char);
+                stack.format(new_element,"\\");
                 continue;
             }
 
