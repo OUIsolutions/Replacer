@@ -100,10 +100,10 @@ UserData * extract_user_informations(){
 
     while(true){
         if(user->action == REPLACE){
-            user->source = interface.ask_string(&interface,"type the folder/file to replace",CLI_TRIM);
+            user->source = interface.ask_string(&interface,"type the folder/file to replace (. for current folder)",CLI_TRIM);
         }
         else{
-            user->source = interface.ask_string(&interface,"type the folder/file to search",CLI_TRIM);
+            user->source = interface.ask_string(&interface,"type the folder/file to search (. for current folder)",CLI_TRIM);
         }
 
         //means its the current dir
