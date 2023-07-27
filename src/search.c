@@ -29,28 +29,28 @@ void execute_search_for_file(UserData *user_data,char *filename){
 
         if(user_data->ignore_strings){
 
-            //means its inside an string
+            //means its inside and its an scape scape
             if(inside_string  == true && current_char =='\\'){
                 i+=1;
                 continue;
             }
 
+            //means its inside string
             if(inside_string  == true && current_char != string_breaker_char){
-                //("pulou em %c\n",current_char);
                 continue;
             }
+
 
             //means its an start of string
             if(inside_string == false && (current_char == '"' || current_char == '\'') ){
                 string_breaker_char = current_char;
-                //printf("bloqueu %c\n",current_char);
                 inside_string = true;
                 continue;
             }
+
             //means its an end of string
             if(inside_string == true && current_char == string_breaker_char){
                 inside_string = false;
-                //printf("desbloqueiu %c\n",current_char);
                 string_breaker_char = '\0';
                 continue;
             }
@@ -87,7 +87,6 @@ void execute_search_for_file(UserData *user_data,char *filename){
 void execute_the_search(UserData *user_data){
     CliInterface  anInterface = newCliInterface();
     anInterface.print(&anInterface,"-------------------Occurrences------------------\n");
-    const char *test = "aaaaaa void ";
     if(user_data->type_of_source == DTW_FILE_TYPE){
         execute_search_for_file(user_data,user_data->source);
         return;
