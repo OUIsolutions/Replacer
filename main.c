@@ -2,7 +2,7 @@
 #include "dependencies/doTheWorld.h"
 #include "dependencies/CTextEngine.h"
 CTextStackModule stack;
-CliInterface  interface;
+CliInterface  cli_interface;
 #include "src/user_data.c"
 #include "src/search.c"
 #include "src/replace.c"
@@ -11,7 +11,7 @@ CliInterface  interface;
 int main(){
 
     stack = newCTextStackModule();
-    interface = newCliInterface();
+    cli_interface = newCliInterface();
 
     UserData  *user_data = extract_user_informations();
 
