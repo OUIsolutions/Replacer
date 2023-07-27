@@ -172,6 +172,12 @@ void execute_the_replace(UserData *user_data){
         anInterface.warning(&anInterface,file->rendered_text);
         stack.free(file);
     }
+    bool execute = interface.ask_option(&interface,"continue?","no | yes");
+    if(execute){
+        transaction->commit(transaction,NULL);
+        interface.print(&interface,"data modified\n");
+    }
+
 
 
 
