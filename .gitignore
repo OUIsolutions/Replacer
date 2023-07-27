@@ -1,6 +1,6 @@
 # Prerequisites
 *.d
-
+dependencies2
 # Object files
 *.o
 *.ko

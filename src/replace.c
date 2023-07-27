@@ -67,8 +67,8 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
         if(strcmp(possible_element->rendered_text,user_data->first_token) == 0){
             found = true;
             stack.format(new_element,"%s",user_data->second_token);
-            i+=user_data->second_token_size -1;
-            continue;
+            i+=user_data->first_token_size -1;
+
         }
 
         else{
