@@ -9,13 +9,13 @@ const int RESTORE = 2;
 typedef struct UserData{
     int action;
     char *first_token;
-    int first_token_size;
     char *second_token;
-    int second_token_size;
     char *source;
+    char *backup_file_path;
+    int first_token_size;
+    int second_token_size;
     int type_of_source;
     bool ignore_strings;
-    char *backup_file_path;
     bool case_sensitive;
 }UserData;
 
@@ -27,14 +27,28 @@ UserData * extract_user_informations(){
 
     user->action = interface.ask_option( &interface,"type the action","search | replace | restore");
     if(user->action == RESTORE){
-        char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
-        CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
-        stack.self_replace(backup_modifed,".replacer","");
-        stack.text(backup_modifed, ".replacer");
-        user->backup_file_path = strdup(backup_modifed->rendered_text);
-        stack.free(backup_modifed);
+        while(true){
+            char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
+            CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
+            stack.self_replace(backup_modifed,".replacer","");
+            stack.text(backup_modifed, ".replacer");
+            free(not_formated_backup_file);
+
+            if(dtw_entity_type(backup_modifed->rendered_text) != DTW_FILE_TYPE){
+                CTextStack *already_exist_mensage = newCTextStack_string_empty();
+                stack.format(already_exist_mensage,"file: %s not exist\n",backup_modifed->rendered_text);
+                interface.warning(&interface,already_exist_mensage->rendered_text);
+                stack.free(already_exist_mensage);
+                stack.free(backup_modifed);
+                continue;
+            }
+            user->backup_file_path = strdup(backup_modifed->rendered_text);
+            stack.free(backup_modifed);
+            break;
+        }
         return user;
     }
+
     if(user->action == SEARCH){
         user->first_token = interface.ask_string(&interface,"type the element to search",CLI_NOT_TRIM);
     }
