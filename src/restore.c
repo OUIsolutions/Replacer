@@ -16,7 +16,7 @@ void restore_data(UserData *user_data){
     interface.warning(&interface,"the following files will be modified:\n");
     for(int i = 0; i < backup_transaction->size; i++){
         CTextStack *file = newCTextStack_string_empty();
-        stack.format(file,"file: \"%s\"",file);
+        stack.format(file,"file: \"%s\"\n",backup_transaction->actions[i]->source);
         interface.warning(&interface,file->rendered_text);
         stack.free(file);
     }
