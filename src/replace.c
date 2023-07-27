@@ -102,10 +102,13 @@ void execute_the_replace(UserData *user_data){
     else{
         DtwStringArray *content = dtw_list_files_recursively(user_data->source,DTW_CONCAT_PATH);
         for(int i = 0; i < content->size; i++){
-
-            CTextStack *replaced_text =execute_replace_for_file(user_data,content->strings[i]);
+            char *filename = content->strings[i];
+            if(dtw_ends_with(filename,".replacer")){
+                continue;
+            }
+            CTextStack *replaced_text =execute_replace_for_file(user_data,filename);
             if(replaced_text){
-                transaction->write_string(transaction,user_data->source,replaced_text->rendered_text);
+                transaction->write_string(transaction,filename,replaced_text->rendered_text);
                 stack.free(replaced_text);
             }
         }
@@ -119,11 +122,16 @@ void execute_the_replace(UserData *user_data){
         transaction->free(transaction);
         return;
     }
-    
+
+
     anInterface.warning(&anInterface,"The Following files will be modified\n");
     for(int i = 0; i < transaction->size; i++){
-        anInterface.warning(&anInterface,transaction->actions[i]->source);
+        CTextStack  *file = newCTextStack_string_empty();
+        stack.format(file,"file: %s\n",transaction->actions[i]->source);
+        anInterface.warning(&anInterface,file->rendered_text);
+        stack.free(file);
     }
+
 
 
 
