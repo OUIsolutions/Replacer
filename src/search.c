@@ -39,7 +39,6 @@ void execute_search_for_file(UserData *user_data,char *filename){
                 continue;
             }
 
-
             //means its an start of string
             if(inside_string == false && (current_char == '"' || current_char == '\'') ){
                 string_breaker_char = current_char;

@@ -24,24 +24,24 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
 
 
         if(!user_data->consider_strings){
-
-            //means its inside and its an scape scape
-            if(inside_string  == true && current_char =='\\'){
-                i+=1;
-                char next_char = element->rendered_text[i+1];
-                stack.format(new_element,"\\%c",next_char);
-                continue;
+            bool ignorable = false;
+            char last_last_char = '\0';
+            char last_char = '\0';
+            if(i >0){
+                last_char = element->rendered_text[i-1];
+            }
+            if(i > 1){
+                last_last_char = element->rendered_text[i-2];
             }
 
-            //means its inside string
-            if(inside_string  == true && current_char != string_breaker_char){
-                stack.format(new_element,"%c",current_char);
-                continue;
+            if( last_last_char != '\\' && last_char == '\\'){
+                ignorable = true;
             }
+
 
 
             //means its an start of string
-            if(inside_string == false && (current_char == '"' || current_char == '\'') ){
+            if(inside_string == false && (current_char == '"' || current_char == '\'') && !ignorable ){
                 string_breaker_char = current_char;
                 inside_string = true;
                 stack.format(new_element,"%c",current_char);
@@ -49,13 +49,18 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
             }
 
             //means its an end of string
-            if(inside_string == true && current_char == string_breaker_char){
+            else if(inside_string == true && current_char == string_breaker_char && !ignorable){
                 inside_string = false;
                 string_breaker_char = '\0';
                 stack.format(new_element,"%c",current_char);
                 continue;
             }
 
+            //its inside an string
+            else if(inside_string == true){
+                stack.format(new_element,"%c",current_char);
+                continue;
+            }
 
         }
 
