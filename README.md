@@ -4,8 +4,10 @@ Replacer is a CLI to search/replace strings
 inside folders/files
 
 ### Tools 
+
 #### Search: 
 Search for currencies of strings inside folders and files
+
 #### Replace:
 Replace strings inside and outsides strings inside folders and files
 #### Backup:
@@ -13,8 +15,13 @@ Store Backups of your files in json transactions
 
 ### Installation
 
+#### Runing from Drivers
+If you want to install from the drivers, you can directly download the linux driver (replacer.out)
+or the windows driver (replacer.exe) and execute wth **./replacer.out** or **./replacer.exe**
+
 #### Installation from scratch
 If you want to install from scratch, just execute a normal compilation with gcc or clang
+
 ~~~shell
 gcc main.c
 ~~~
