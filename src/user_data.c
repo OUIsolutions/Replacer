@@ -14,6 +14,7 @@ typedef struct UserData{
     char *source;
     int type_of_source;
     bool ignore_strings;
+    bool case_sensitive;
 }UserData;
 
 UserData * extract_user_informations(){
@@ -25,17 +26,25 @@ UserData * extract_user_informations(){
     user->action = interface.ask_option( &interface,"type the action","search | replace");
 
     if(user->action == SEARCH){
-        user->first_token = interface.ask_string(&interface,"type the element to search",CLI_TRIM);
+        user->first_token = interface.ask_string(&interface,"type the element to search",CLI_NOT_TRIM);
     }
     if(user->action == REPLACE){
-        user->first_token = interface.ask_string(&interface,"type the element that will be replaced",CLI_TRIM);
-        user->second_token = interface.ask_string(&interface,"type the element to replace",CLI_TRIM);
+        user->first_token = interface.ask_string(&interface,"type the element that will be replaced",CLI_NOT_TRIM);
+        user->second_token = interface.ask_string(&interface,"type the element to replace",CLI_NOT_TRIM);
         user->second_token_size = (int)strlen(user->second_token);
     }
     user->first_token_size  = (int) strlen(user->first_token);
 
     user->ignore_strings = interface.ask_option( &interface,"do you want to ignore strings?","no | yes");
+    user->case_sensitive = interface.ask_option( &interface,"case sensitive?","no | yes");
 
+    if(!user->case_sensitive){
+        CTextStack *first_token = newCTextStack_string(user->first_token);
+        free(user->first_token);
+        stack.self_lower(first_token);
+        user->first_token = strdup(first_token->rendered_text);
+        stack.free(first_token);
+    }
 
     while(true){
         if(user->action == REPLACE){
@@ -44,6 +53,13 @@ UserData * extract_user_informations(){
         else{
             user->source = interface.ask_string(&interface,"type the folder/file to search",CLI_TRIM);
         }
+
+        //means its the current dir
+        if(strcmp(user->source,".") == 0){
+            free(user->source);
+            user->source = dtw_get_current_dir();
+        }
+
         user->type_of_source =dtw_entity_type(user->source);
         if(user->type_of_source == DTW_NOT_FOUND){
             CTextStack *s = newCTextStack_string_empty();

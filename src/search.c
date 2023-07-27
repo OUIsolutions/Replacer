@@ -59,6 +59,11 @@ void execute_search_for_file(UserData *user_data,char *filename){
         }
 
         CTextStack *possible_element = stack.substr(element,i,i+user_data->first_token_size);
+
+        if(!user_data->case_sensitive){
+            stack.self_lower(possible_element);
+        }
+
         if(strcmp(possible_element->rendered_text,user_data->first_token) == 0){
             found = true;
             stack.format(mensage,"%d,",current_line+1);
@@ -91,7 +96,7 @@ void execute_the_search(UserData *user_data){
         execute_search_for_file(user_data,user_data->source);
         return;
     }
-
+    //VOID
     DtwStringArray *content = dtw_list_files_recursively(user_data->source,DTW_CONCAT_PATH);
     for(int i = 0; i < content->size; i++){
         execute_search_for_file(user_data,content->strings[i]);
