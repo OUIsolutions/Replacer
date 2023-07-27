@@ -34,7 +34,7 @@ UserData * extract_user_informations(){
     }
     user->first_token_size  = (int) strlen(user->first_token);
 
-    user->ignore_strings = interface.ask_option( &interface,"do you want to ignore strings?","yes | no");
+    user->ignore_strings = interface.ask_option( &interface,"do you want to ignore strings?","no | yes");
 
 
     while(true){

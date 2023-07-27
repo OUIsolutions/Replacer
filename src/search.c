@@ -9,51 +9,74 @@ void execute_search_for_file(UserData *user_data,char *filename){
         return;
     }
     CTextStack * element = newCTextStack_string(content);
-    printf("element size %ld\n",element->size);
-    printf("content size %ld\n", strlen(content));
-    return;
 
     CTextStack *mensage = newCTextStack_string_empty();
-    stack.format(mensage,"file: %s lines:[",filename);
+    stack.format(mensage,"file: \"%s\" lines:[",filename);
 
+    free(content);
 
     long current_line = 0;
+    bool found = false;
     bool inside_string = false;
+    char string_breaker_char = '\0';
 
-    for(int i =0; i < strlen(content); i++){
-        char current_char = content[i];
+    for(int i =0; i < element->size; i++){
+        char current_char = element->rendered_text[i];
 
         if(current_char =='\n'){
             current_line+=1;
         }
-        /*
-        if(user_data->ignore_strings){
-            bool is_string_breaker = current_char == '"' || current_char == '\'';
 
-            if(inside_string && is_string_breaker == false){
+        if(user_data->ignore_strings){
+
+            //means its inside an string
+            if(inside_string  == true && current_char =='\\'){
+                i+=1;
                 continue;
             }
-            if(inside_string == false && is_string_breaker){
+
+            if(inside_string  == true && current_char != string_breaker_char){
+                //("pulou em %c\n",current_char);
+                continue;
+            }
+
+            //means its an start of string
+            if(inside_string == false && (current_char == '"' || current_char == '\'') ){
+                string_breaker_char = current_char;
+                //printf("bloqueu %c\n",current_char);
                 inside_string = true;
                 continue;
             }
-            inside_string = false;
+            //means its an end of string
+            if(inside_string == true && current_char == string_breaker_char){
+                inside_string = false;
+                //printf("desbloqueiu %c\n",current_char);
+                string_breaker_char = '\0';
+                continue;
+            }
+
+
         }
+
         CTextStack *possible_element = stack.substr(element,i,i+user_data->first_token_size);
         if(strcmp(possible_element->rendered_text,user_data->first_token) == 0){
-            stack.format(mensage,"%d,",current_line);
+            found = true;
+            stack.format(mensage,"%d,",current_line+1);
         }
         stack.free(possible_element);
 
-        */
+
+    }
+    if(!found){
+        stack.free(mensage);
+        stack.free(element);
+        return;
     }
 
-    printf("total de linhas %ld\n",current_line);
-    stack.self_substr(mensage,0,-1);
+    stack.self_substr(mensage,0,-2);
     stack.format(mensage,"]\n");
-    CliInterface  interfacce = newCliInterface();
-    interfacce.print(&interfacce,mensage->rendered_text);
-    free(content);
+    CliInterface  anInterface = newCliInterface();
+    anInterface.print(&anInterface, mensage->rendered_text);
 
     stack.free(mensage);
     stack.free(element);
@@ -62,6 +85,9 @@ void execute_search_for_file(UserData *user_data,char *filename){
 }
 
 void execute_the_search(UserData *user_data){
+    CliInterface  anInterface = newCliInterface();
+    anInterface.print(&anInterface,"-------------------Occurrences------------------\n");
+    const char *test = "aaaaaa void ";
     if(user_data->type_of_source == DTW_FILE_TYPE){
         execute_search_for_file(user_data,user_data->source);
         return;
