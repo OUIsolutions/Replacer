@@ -136,19 +136,18 @@ void execute_the_replace(UserData *user_data){
 
     }
 
-    CliInterface  anInterface = newCliInterface();
     if(!transaction->size){
-        anInterface.warning(&anInterface,"nothing to replace\n");
+        interface.warning(&interface,"nothing to replace\n");
         transaction->free(transaction);
         return;
     }
     generated_transaction_backup(user_data,transaction);
 
-    anInterface.warning(&anInterface,"The Following files will be modified\n");
+    interface.warning(&interface,"The Following files will be modified\n");
     for(int i = 0; i < transaction->size; i++){
         CTextStack  *file = newCTextStack_string_empty();
         stack.format(file,"file: %s\n",transaction->actions[i]->source);
-        anInterface.warning(&anInterface,file->rendered_text);
+        interface.warning(&interface,"%s", file->rendered_text);
         stack.free(file);
     }
 
@@ -157,6 +156,7 @@ void execute_the_replace(UserData *user_data){
         transaction->commit(transaction,NULL);
         interface.print(&interface,"data modified\n");
     }
+    transaction->free(transaction);
 
 
 
