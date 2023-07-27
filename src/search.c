@@ -13,7 +13,6 @@ void execute_search_for_file(UserData *user_data,char *filename){
     CTextStack *mensage = newCTextStack_string_empty();
     stack.format(mensage,"file: \"%s\" lines:[",filename);
 
-    free(content);
 
     long current_line = 0;
     bool found = false;
@@ -72,6 +71,7 @@ void execute_search_for_file(UserData *user_data,char *filename){
 
 
     }
+
     if(!found){
         stack.free(mensage);
         stack.free(element);
@@ -80,8 +80,8 @@ void execute_search_for_file(UserData *user_data,char *filename){
 
     stack.self_substr(mensage,0,-2);
     stack.format(mensage,"]\n");
-    interface.print(&interface, mensage->rendered_text);
-
+    interface.print(&interface,"%s", mensage->rendered_text);
+    free(content);
     stack.free(mensage);
     stack.free(element);
 
