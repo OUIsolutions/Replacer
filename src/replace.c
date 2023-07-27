@@ -100,8 +100,9 @@ void generated_transaction_backup(DtwTransaction *transaction){
 
     while(true){
         char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
-        CTextStack *backup_modifed = newCTextStack_string_empty();
-        stack.format(backup_modifed, "%s.replacer", not_formated_backup_file);
+        CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
+        stack.self_replace(backup_modifed,".replacer","");
+        stack.text(backup_modifed, ".replacer");
         free(not_formated_backup_file);
 
         if(dtw_entity_type(backup_modifed->rendered_text) != DTW_NOT_FOUND){
@@ -174,6 +175,7 @@ void execute_the_replace(UserData *user_data){
         anInterface.warning(&anInterface,file->rendered_text);
         stack.free(file);
     }
+
     bool execute = interface.ask_option(&interface,"continue?","no | yes");
     if(execute){
         transaction->commit(transaction,NULL);
