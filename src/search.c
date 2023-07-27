@@ -80,8 +80,7 @@ void execute_search_for_file(UserData *user_data,char *filename){
 
     stack.self_substr(mensage,0,-2);
     stack.format(mensage,"]\n");
-    CliInterface  anInterface = newCliInterface();
-    anInterface.print(&anInterface, mensage->rendered_text);
+    interface.print(&interface, mensage->rendered_text);
 
     stack.free(mensage);
     stack.free(element);
@@ -90,8 +89,7 @@ void execute_search_for_file(UserData *user_data,char *filename){
 }
 
 void execute_the_search(UserData *user_data){
-    CliInterface  anInterface = newCliInterface();
-    anInterface.print(&anInterface,"-------------------Occurrences------------------\n");
+    interface.print(&interface,"-------------------Occurrences------------------\n");
     if(user_data->type_of_source == DTW_FILE_TYPE){
         execute_search_for_file(user_data,user_data->source);
         return;

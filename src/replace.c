@@ -87,6 +87,44 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
     return  new_element;
 
 }
+void generated_transaction_backup(DtwTransaction *transaction){
+
+    bool store_backup = interface.ask_option(&interface,"store backup?","no | yes");
+    if(!store_backup) {
+        return;
+    }
+
+    char *backup_file_path;
+    while(true){
+        char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
+        CTextStack *backup_modifed = newCTextStack_string_empty();
+        stack.format(backup_modifed, "%s.replacer", not_formated_backup_file);
+        free(not_formated_backup_file);
+
+        if(dtw_entity_type(backup_modifed->rendered_text) != DTW_NOT_FOUND){
+
+            CTextStack *already_exist_mensage = newCTextStack_string_empty();
+            stack.format(already_exist_mensage,"file: %s already exist",backup_modifed->rendered_text);
+            interface.warning(&interface,already_exist_mensage->rendered_text);
+            stack.free(already_exist_mensage);
+
+        }
+
+    }
+
+
+    DtwTransaction *backup_transaction = newDtwTransaction();
+    for(int i = 0; i < transaction->size; i++) {
+        char *current_file_path = transaction->actions[i]->source;
+        char *content = dtw_load_string_file_content(current_file_path);
+        backup_transaction->write_string(backup_transaction,current_file_path,content);
+        free(content);
+    }
+
+    backup_transaction->dumps_transaction_to_json_file(backup_transaction,backupfile);
+    backup_transaction->free(backup_transaction);
+
+}
 
 void execute_the_replace(UserData *user_data){
 

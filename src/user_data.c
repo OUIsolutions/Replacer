@@ -21,7 +21,6 @@ UserData * extract_user_informations(){
     UserData *user = (UserData*)malloc(sizeof(UserData));
     //extracting informations
 
-    CliInterface  interface = newCliInterface();
 
     user->action = interface.ask_option( &interface,"type the action","search | replace");
 
