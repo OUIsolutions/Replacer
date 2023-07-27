@@ -89,33 +89,9 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
     return  new_element;
 
 }
-void generated_transaction_backup(DtwTransaction *transaction){
-
-    bool store_backup = interface.ask_option(&interface,"store backup?","no | yes");
-    if(!store_backup) {
+void generated_transaction_backup(UserData *user_data,DtwTransaction *transaction){
+    if(!user_data->backup_file_path){
         return;
-    }
-
-    char *backup_file_path;
-
-    while(true){
-        char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
-        CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
-        stack.self_replace(backup_modifed,".replacer","");
-        stack.text(backup_modifed, ".replacer");
-        free(not_formated_backup_file);
-
-        if(dtw_entity_type(backup_modifed->rendered_text) != DTW_NOT_FOUND){
-            CTextStack *already_exist_mensage = newCTextStack_string_empty();
-            stack.format(already_exist_mensage,"file: %s already exist\n",backup_modifed->rendered_text);
-            interface.warning(&interface,already_exist_mensage->rendered_text);
-            stack.free(already_exist_mensage);
-            stack.free(backup_modifed);
-            continue;
-        }
-        backup_file_path = strdup(backup_modifed->rendered_text);
-        stack.free(backup_modifed);
-        break;
     }
 
 
@@ -127,7 +103,7 @@ void generated_transaction_backup(DtwTransaction *transaction){
         free(content);
     }
 
-    backup_transaction->dumps_transaction_to_json_file(backup_transaction,backup_file_path);
+    backup_transaction->dumps_transaction_to_json_file(backup_transaction,user_data->backup_file_path);
     backup_transaction->free(backup_transaction);
 
 }
@@ -166,7 +142,7 @@ void execute_the_replace(UserData *user_data){
         transaction->free(transaction);
         return;
     }
-    generated_transaction_backup(transaction);
+    generated_transaction_backup(user_data,transaction);
 
     anInterface.warning(&anInterface,"The Following files will be modified\n");
     for(int i = 0; i < transaction->size; i++){

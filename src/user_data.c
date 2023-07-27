@@ -14,11 +14,13 @@ typedef struct UserData{
     char *source;
     int type_of_source;
     bool ignore_strings;
+    char *backup_file_path;
     bool case_sensitive;
 }UserData;
 
 UserData * extract_user_informations(){
     UserData *user = (UserData*)malloc(sizeof(UserData));
+    *user = (UserData){0};
     //extracting informations
 
 
@@ -31,7 +33,33 @@ UserData * extract_user_informations(){
         user->first_token = interface.ask_string(&interface,"type the element that will be replaced",CLI_NOT_TRIM);
         user->second_token = interface.ask_string(&interface,"type the element to replace",CLI_NOT_TRIM);
         user->second_token_size = (int)strlen(user->second_token);
+
+        bool store_backup = interface.ask_option(&interface,"store backup?","no | yes");
+        if(store_backup) {
+
+            while(true){
+                char *not_formated_backup_file = interface.ask_string(&interface,"type the name of your backup",CLI_TRIM);
+                CTextStack *backup_modifed = newCTextStack_string(not_formated_backup_file);
+                stack.self_replace(backup_modifed,".replacer","");
+                stack.text(backup_modifed, ".replacer");
+                free(not_formated_backup_file);
+
+                if(dtw_entity_type(backup_modifed->rendered_text) != DTW_NOT_FOUND){
+                    CTextStack *already_exist_mensage = newCTextStack_string_empty();
+                    stack.format(already_exist_mensage,"file: %s already exist\n",backup_modifed->rendered_text);
+                    interface.warning(&interface,already_exist_mensage->rendered_text);
+                    stack.free(already_exist_mensage);
+                    stack.free(backup_modifed);
+                    continue;
+                }
+                user->backup_file_path = strdup(backup_modifed->rendered_text);
+                stack.free(backup_modifed);
+                break;
+            }
+        }
+
     }
+
     user->first_token_size  = (int) strlen(user->first_token);
 
     user->ignore_strings = interface.ask_option( &interface,"do you want to ignore strings?","no | yes");
@@ -79,6 +107,10 @@ void user_data_free(UserData *user){
     if(user->action == REPLACE){
         free(user->second_token);
     }
+    if(user->backup_file_path){
+        free(user->backup_file_path);
+    }
+
     free(user);
 
 }
