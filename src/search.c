@@ -44,6 +44,8 @@ void execute_search_for_file(UserData *user_data,char *filename){
     if(!found){
         stack.free(mensage);
         stack.free(element);
+        free(content);
+
         return;
     }
 
