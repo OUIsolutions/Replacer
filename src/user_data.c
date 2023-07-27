@@ -8,7 +8,9 @@ const int  REPLACE = 1;
 typedef struct UserData{
     int action;
     char *first_token;
+    int first_token_size;
     char *second_token;
+    int second_token_size;
     char *source;
     int type_of_source;
     bool ignore_strings;
@@ -17,7 +19,7 @@ typedef struct UserData{
 UserData * extract_user_informations(){
     UserData *user = (UserData*)malloc(sizeof(UserData));
     //extracting informations
-    CTextStackModule stack = newCTextStackModule();
+
     CliInterface  interface = newCliInterface();
 
     user->action = interface.ask_option( &interface,"type the action","search | replace");
@@ -28,7 +30,10 @@ UserData * extract_user_informations(){
     if(user->action == REPLACE){
         user->first_token = interface.ask_string(&interface,"type the element that will be replaced",CLI_TRIM);
         user->second_token = interface.ask_string(&interface,"type the element to replace",CLI_TRIM);
+        user->second_token_size = (int)strlen(user->second_token);
     }
+    user->first_token_size  = (int) strlen(user->first_token);
+
     user->ignore_strings = interface.ask_option( &interface,"do you want to ignore strings?","yes | no");
 
 
@@ -41,7 +46,7 @@ UserData * extract_user_informations(){
         }
         user->type_of_source =dtw_entity_type(user->source);
         if(user->type_of_source == DTW_NOT_FOUND){
-            CTextStack *s = newCTextStack("","");
+            CTextStack *s = newCTextStack_string_empty();
             stack.format(s,"%s is not an valid source\n",user->source);
             interface.warning(&interface,s->rendered_text);
             free(user->source);
