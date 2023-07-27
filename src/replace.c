@@ -19,49 +19,12 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
     bool inside_string = false;
     char string_breaker_char = '\0';
 
+    int total_lines;
+
     for(int i =0; i < element->size; i++){
         char current_char = element->rendered_text[i];
-
-
-        if(!user_data->consider_strings){
-            bool ignorable = false;
-            char last_last_char = '\0';
-            char last_char = '\0';
-            if(i >0){
-                last_char = element->rendered_text[i-1];
-            }
-            if(i > 1){
-                last_last_char = element->rendered_text[i-2];
-            }
-
-            if( last_last_char != '\\' && last_char == '\\'){
-                ignorable = true;
-            }
-
-
-
-            //means its an start of string
-            if(inside_string == false && (current_char == '"' || current_char == '\'') && !ignorable ){
-                string_breaker_char = current_char;
-                inside_string = true;
-                stack.format(new_element,"%c",current_char);
-                continue;
-            }
-
-            //means its an end of string
-            else if(inside_string == true && current_char == string_breaker_char && !ignorable){
-                inside_string = false;
-                string_breaker_char = '\0';
-                stack.format(new_element,"%c",current_char);
-                continue;
-            }
-
-            //its inside an string
-            else if(inside_string == true){
-                stack.format(new_element,"%c",current_char);
-                continue;
-            }
-
+        if(current_char =='\n'){
+            total_lines+=1;
         }
 
         CTextStack *possible_element = stack.substr(element,i,i+user_data->first_token_size);

@@ -25,38 +25,8 @@ void execute_search_for_file(UserData *user_data,char *filename){
         if(current_char =='\n'){
             current_line+=1;
         }
-
-        if(user_data->consider_strings){
-
-            //means its inside and its an scape scape
-            if(inside_string  == true && current_char =='\\'){
-                i+=1;
-                continue;
-            }
-
-            //means its inside string
-            if(inside_string  == true && current_char != string_breaker_char){
-                continue;
-            }
-
-            //means its an start of string
-            if(inside_string == false && (current_char == '"' || current_char == '\'') ){
-                string_breaker_char = current_char;
-                inside_string = true;
-                continue;
-            }
-
-            //means its an end of string
-            if(inside_string == true && current_char == string_breaker_char){
-                inside_string = false;
-                string_breaker_char = '\0';
-                continue;
-            }
-
-
-        }
-
         CTextStack *possible_element = stack.substr(element,i,i+user_data->first_token_size);
+
 
         if(!user_data->case_sensitive){
             stack.self_lower(possible_element);

@@ -15,7 +15,6 @@ typedef struct UserData{
     int first_token_size;
     int second_token_size;
     int type_of_source;
-    bool consider_strings;
     bool case_sensitive;
 }UserData;
 
@@ -87,7 +86,6 @@ UserData * extract_user_informations(){
 
     user->first_token_size  = (int) strlen(user->first_token);
 
-    user->consider_strings = interface.ask_option(&interface, "do you want to consider strings?", "no | yes");
     user->case_sensitive = interface.ask_option( &interface,"case sensitive?","no | yes");
 
     if(!user->case_sensitive){
