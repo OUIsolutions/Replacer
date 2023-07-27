@@ -9,20 +9,24 @@ void execute_search_for_file(UserData *user_data,char *filename){
         return;
     }
     CTextStack * element = newCTextStack_string(content);
-    free(content);
+    printf("element size %ld\n",element->size);
+    printf("content size %ld\n", strlen(content));
+    return;
 
     CTextStack *mensage = newCTextStack_string_empty();
-    stack.format(mensage,"file: %s lines:[");
+    stack.format(mensage,"file: %s lines:[",filename);
 
 
     long current_line = 0;
     bool inside_string = false;
 
-    for(int i =0; i < element->size; i ++){
-        char current_char = element->rendered_text[i];
+    for(int i =0; i < strlen(content); i++){
+        char current_char = content[i];
+
         if(current_char =='\n'){
             current_line+=1;
         }
+        /*
         if(user_data->ignore_strings){
             bool is_string_breaker = current_char == '"' || current_char == '\'';
 
@@ -41,13 +45,16 @@ void execute_search_for_file(UserData *user_data,char *filename){
         }
         stack.free(possible_element);
 
+        */
     }
 
-
-    stack.substr(mensage,0,-1);
-    stack.format(mensage,"]");
+    printf("total de linhas %ld\n",current_line);
+    stack.self_substr(mensage,0,-1);
+    stack.format(mensage,"]\n");
     CliInterface  interfacce = newCliInterface();
     interfacce.print(&interfacce,mensage->rendered_text);
+    free(content);
+
     stack.free(mensage);
     stack.free(element);
 
