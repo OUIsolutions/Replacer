@@ -26,7 +26,7 @@ void execute_search_for_file(UserData *user_data,char *filename){
             current_line+=1;
         }
 
-        if(user_data->ignore_strings){
+        if(user_data->consider_strings){
 
             //means its inside and its an scape scape
             if(inside_string  == true && current_char =='\\'){

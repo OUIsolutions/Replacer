@@ -23,11 +23,13 @@ CTextStack * execute_replace_for_file(UserData *user_data,char *filename){
         char current_char = element->rendered_text[i];
 
 
-        if(user_data->ignore_strings){
+        if(!user_data->consider_strings){
 
             //means its inside and its an scape scape
             if(inside_string  == true && current_char =='\\'){
-                stack.format(new_element,"\\");
+                i+=1;
+                char next_char = element->rendered_text[i+1];
+                stack.format(new_element,"\\%c",next_char);
                 continue;
             }
 
